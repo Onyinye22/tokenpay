@@ -1,59 +1,113 @@
+name: Build macOS App
+
 on:
   push
+
 jobs:
-  ubuntu20:
-    runs-on: ubuntu-20.04
+  macos12:
+    runs-on: macos-12
 
     steps:
+      # Checkout the repository code
       - uses: actions/checkout@v4
 
-      - name: Update apt repos
-        run: sudo apt-get update
+      # Configure git credentials (optional step, depending on need)
+      - name: Configure git credentials
+        run: git config credential.helper
 
-      - name: download and untar boost
-        run: wget https://sourceforge.net/projects/boost/files/boost/1.65.1/boost_1_65_1.tar.gz
-      - name: untar boost
-        run: tar xzvf boost_1_65_1.tar.gz
-        
-      - name: go in and run bootstrap
-        run: cd boost_1_65_1 && ./bootstrap.sh --prefix=/usr/local --with-libraries=chrono,date_time,iostreams,filesystem,program_options,system,thread,test
+      # Select specific Xcode version (requires pre-installed Xcode 13.1 on runner)
+      - name: Select Xcode version
+        run: |
+          ls -la /Applications/Xcode*
+          sudo xcode-select -switch /Applications/Xcode_13.1.app
 
-      - name: run b2 
-        run: cd boost_1_65_1 && sudo ./b2 install
-        
-      - name: get and untar bdb4.8
-        run: wget http://download.oracle.com/berkeley-db/db-4.8.30.NC.tar.gz && tar -xzvf db-4.8.30.NC.tar.gz
-        
-      - name: list files
-        run: ls
-        
-      - name: fix atomic
-        run: cd db-4.8.30.NC/build_unix/ && sed -i 's/__atomic_compare_exchange/__atomic_compare_exchange_db/g' /home/runner/work/tokenpay-linux/tokenpay-linux/db-4.8.30.NC/dbinc/atomic.h 
-        
-      - name: build bdb4.8
-        run: cd db-4.8.30.NC/build_unix/ && ../dist/configure --enable-cxx
-        
-      - name: make and make install 
-        run: cd db-4.8.30.NC/build_unix/ && make && sudo make install
-        
-      - name: Install base dependencies
-        run: sudo apt-get install build-essential libtool autotools-dev automake pkg-config zlib1g-dev libevent-dev bsdmainutils git libseccomp-dev libcap-dev libminiupnpc-dev libqt5gui5 libqt5core5a libqt5webkit5-dev libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler libqrencode-dev
+      # Verify LLVM GCC installation
+      - name: Check GCC version
+        run: llvm-gcc --version
 
-      - name: Auto generate
+      - name: Install Python 3
+        run: |
+          echo "Installing Python 3..."
+          brew install --quiet python@3 || brew link --overwrite python@3
+
+      - name: Install additional dependencies
+        run: |
+          echo "Installing automake..."
+          brew install --quiet automake
+          echo "Installing Berkeley DB..."
+          brew install --quiet berkeley-db@4
+          echo "Installing miniupnpc..."
+          brew install --quiet miniupnpc
+          echo "Installing qt@5..."
+          brew install --quiet qt@5
+          echo "Installing gperf..."
+          brew install --quiet gperf
+          echo "Installing qrencode..."
+          brew install --quiet qrencode
+          echo "Installing librsvg..."
+          brew install --quiet librsvg
+
+      - name: Handle OpenSSL version conflict
+        run: |
+          echo "Unlinking openssl@3 and linking openssl@1.1..."
+          brew unlink openssl@3 || true  # Ignore error if openssl@3 isn't installed
+          brew link --overwrite openssl@1.1
+
+      - name: Install Protobuf@21
+        run: |
+          echo "Installing protobuf@21..."
+          brew install protobuf@21
+
+      # Download and prepare Boost library with a patch
+      - name: Download and setup Boost
+        run: |
+          wget http://sourceforge.net/projects/boost/files/boost/1.67.0/boost_1_67_0.tar.gz
+          wget --no-verbose https://github.com/boostorg/atomic/commit/6e14ca24dab50ad4c1fa8c27c7dd6f1cb791b534.patch
+          tar -xzvf boost_1_67_0.tar.gz
+          cd boost_1_67_0/tools/build/src/tools
+          rm -rf darwin.jam
+          wget https://raw.githubusercontent.com/t3sting3/boost167/refs/heads/main/darwin.jam
+
+      # Apply patch to Boost
+      - name: Apply patch to Boost
+        run: patch boost_1_67_0/boost/atomic/detail/ops_gcc_x86_dcas.hpp < 6e14ca24dab50ad4c1fa8c27c7dd6f1cb791b534.patch 
+
+      # Bootstrap Boost library
+      - name: Bootstrap Boost
+        run: cd boost_1_67_0 && ./bootstrap.sh --with-toolset=darwin
+
+      # Build specific Boost libraries
+      - name: Build Boost libraries
+        run: cd boost_1_67_0 && ./b2 --with-system --with-filesystem --with-chrono --with-date_time --with-iostreams --with-program_options --with-thread --with-test cxxflags="-std=c++11 -Wno-deprecated-declarations" toolset=darwin
+
+      # Link installed dependencies
+      - name: Link dependencies
+        run: brew link qt@5 berkeley-db@4
+
+      # Confirm Clang and Xcode version
+      - name: Verify Clang/Xcode version
+        run: clang --version
+
+      # Generate configure script (if using autotools)
+      - name: Autogenerate configuration files
         run: ./autogen.sh
-        
-      - name: bdb locate
-        run: sudo ln -s /usr/local/BerkeleyDB.4.8/lib/libdb-4.8.so /usr/lib/libdb-4.8.so && sudo ln -s /usr/local/BerkeleyDB.4.8/lib/libdb_cxx-4.8.so /usr/lib/libdb_cxx-4.8.so
 
-      - name: configure
-        run: ./configure --enable-gui --disable-werror --prefix=`pwd`/depends/x86_64-linux-gnu --bindir=`pwd`/release/bin --libdir=`pwd`/release/lib
+      # Configure the build
+      - name: Configure build
+        run: ./configure --disable-dependency-tracking --disable-werror --bindir=$(pwd)/release/bin --libdir=$(pwd)/release/lib
 
-      - name: make
-        run: make -j4
+      # Compile the code
+      - name: Compile the project
+        run: make clean
 
-      - uses: actions/upload-artifact@v4
+      # Package the app into a .dmg file
+      - name: Create .dmg package
+        run: make deploy
+
+      # Upload the .dmg file as an artifact
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: tpay-ubuntu20
+          name: tpay-macos13
           path: |
-            ./src/tokenpayd
-            ./src/tokenpay
+            *.dmg
