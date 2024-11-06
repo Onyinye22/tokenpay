@@ -5,16 +5,16 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
       - name: Update apt repos
         run: sudo apt-get update
 
-      - name: Install base dependencies
+      - name: Install base dependencies      
         run: sudo apt-get install build-essential xutils-dev libtool gperf autotools-dev automake pkg-config bsdmainutils libattr1-dev make automake bison byacc cmake curl g++-multilib binutils-gold bison byacc python3
 
       - name: Build depends
-        run: cd depends/ && make -j4 HOST=x86_64-linux-gnu
+        run: cd my_project/depends/ && make -j4 HOST=x86_64-linux-gnu
 
       - name: Auto generate
         run: ./autogen.sh
