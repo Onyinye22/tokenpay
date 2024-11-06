@@ -104,6 +104,10 @@ jobs:
       - name: Create .dmg package
         run: make deploy
 
+      - name: compile the project 
+        run: make
+        working-directory: path/to/your/project
+
       # Upload the .dmg file as an artifact
       - name: Upload artifact
         uses: actions/upload-artifact@v4
