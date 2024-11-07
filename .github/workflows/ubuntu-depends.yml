@@ -26,6 +26,16 @@ jobs:
           cmake ..
           make -j4
           sudo make install
+
+      - name: Clone and build QtSensors from source
+        run: |
+          git clone https://github.com/qt/qtsensors.git
+          cd qtsensors
+          mkdir build
+          cd build
+          cmake ..
+          make -j$(nproc)
+          sudo make install
       
       - name: List current directory
         run: ls -R
