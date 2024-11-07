@@ -32,6 +32,9 @@ jobs:
 
       - name: execute permission for autogen.sh
         run: chmod +x autogen.sh
+
+      - name: run autogen.sh to generate configure script
+        run: ./autogen.sh
       
       #- name: Auto generategit clone https://github.com/qt/qtwebkit.git
         #  cd qtwebkit
