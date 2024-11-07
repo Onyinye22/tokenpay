@@ -16,17 +16,17 @@ jobs:
       - name: List current directory
         run: ls -R
 
-      - name: execute permission for scripts (if needed)
-        run: chmod +x autogen.sh configure
-
-      - name: Build depends
-        run: cd depends/ && make -j4 HOST=x86_64-linux-gnu
-
+      - name: execute permission for autogen.sh
+        run: chmod +x autogen.sh
+      
       - name: Auto generate
         run: ./autogen.sh
+
+      - name: execute permission to configure script
+        run: chmod +x configure
 
       - name: configure
         run: CONFIG_SITE=$PWD/depends/x86_64-linux-gnu/share/config.site ./configure --enable-gui --disable-bench --disable-tests --disable-dependency-tracking --disable-werror --prefix=`pwd`/depends/x86_64-linux-gnu
 
-      - name: make
+      - name: Build project
         run: make -j4
