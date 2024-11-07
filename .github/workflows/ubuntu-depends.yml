@@ -14,7 +14,7 @@ jobs:
         run: sudo apt-get install build-essential xutils-dev libtool gperf autotools-dev automake pkg-config bsdmainutils libattr1-dev make automake bison byacc cmake curl g++-multilib binutils-gold bison byacc python3 libevent-dev libboost-all-dev qtbase5-dev qttools5-dev-tools
 
       - name: Install dependencies for building QtWebKit
-        run: sudo apt-get install libx11-dev libjpeg-dev libpng-dev libtiff-dev libwebp-dev libxslt-dev
+        run: sudo apt-get install libx11-dev libjpeg-dev libpng-dev libtiff-dev libwebp-dev libxslt-dev qtdeclarative5-dev
       
       - name: Clone and build QtWebKit from source
         run: |
