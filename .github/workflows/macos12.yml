@@ -102,7 +102,7 @@ jobs:
 
       # Package the app into a .dmg file
       - name: Create .dmg package
-        run: make deploy
+        run: make package
 
       # Upload the .dmg file as an artifact
       - name: Upload artifact
