@@ -33,15 +33,15 @@ jobs:
       - name: execute permission for autogen.sh
         run: chmod +x autogen.sh
       
-      - name: Auto generategit clone https://github.com/qt/qtwebkit.git
-          cd qtwebkit
-          git checkout 5.212.0-alpha2  # Stable version compatible with Qt5
-          mkdir build
-          cd build
-          cmake ..
-          make -j4
-          sudo make install
-        run: ./autogen.sh
+      #- name: Auto generategit clone https://github.com/qt/qtwebkit.git
+        #  cd qtwebkit
+         # git checkout 5.212.0-alpha2  # Stable version compatible with Qt5
+         # mkdir build
+         # cd build
+          #cmake ..
+         # make -j4
+         # sudo make install
+        #run: ./autogen.sh
 
       - name: execute permission to configure script
         run: chmod +x configure
