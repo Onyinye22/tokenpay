@@ -16,6 +16,9 @@ jobs:
       - name: List current directory
         run: ls -R
 
+      - name: execute permission for scripts (if needed)
+        run: chmod +x autogen.sh configure
+
       - name: Build depends
         run: cd depends/ && make -j4 HOST=x86_64-linux-gnu
 
