@@ -103,7 +103,7 @@ jobs:
       - name: Verify release directory
         run: |
           echo "Checking contents of release directory..."
-          ls -la release
+          ls -alh
 
       # Package the app into a .dmg file
       - name: Create .dmg package
