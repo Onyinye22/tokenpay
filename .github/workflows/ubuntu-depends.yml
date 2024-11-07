@@ -15,14 +15,32 @@ jobs:
 
       - name: Install dependencies for building QtWebKit
         run: sudo apt-get install libx11-dev libjpeg-dev libpng-dev libtiff-dev libwebp-dev
-        
+      
+      - name: Clone and build QtWebKit from source
+        run: |
+          git clone https://github.com/qt/qtwebkit.git
+          cd qtwebkit
+          git checkout 5.212.0-alpha2  # Stable version compatible with Qt5
+          mkdir build
+          cd build
+          cmake ..
+          make -j4
+          sudo make install
+      
       - name: List current directory
         run: ls -R
 
       - name: execute permission for autogen.sh
         run: chmod +x autogen.sh
       
-      - name: Auto generate
+      - name: Auto generategit clone https://github.com/qt/qtwebkit.git
+          cd qtwebkit
+          git checkout 5.212.0-alpha2  # Stable version compatible with Qt5
+          mkdir build
+          cd build
+          cmake ..
+          make -j4
+          sudo make install
         run: ./autogen.sh
 
       - name: execute permission to configure script
