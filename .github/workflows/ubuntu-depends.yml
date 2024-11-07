@@ -20,7 +20,7 @@ jobs:
         run: |
           git clone https://github.com/qt/qtwebkit.git
           cd qtwebkit
-          git checkout 5.212.0-alpha2  # Stable version compatible with Qt5
+          git checkout webkit -qt5  # Checkout the Qt5-compatible branch
           mkdir build
           cd build
           cmake ..
