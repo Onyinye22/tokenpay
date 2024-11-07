@@ -17,28 +17,15 @@ jobs:
         run: sudo apt-get install libx11-dev libjpeg-dev libpng-dev libtiff-dev libwebp-dev
       
       - name: Clone and build QtWebKit from source
-        run: | 
+        run: |
           git clone https://github.com/qt/qtwebkit.git
           cd qtwebkit
-          git branch -r  # List remote branches
-          git checkout master  # Switch to a valid branch (default master or a stable one)
-
-      - name: Build and Install QtWebKit
-        run: |
+          git checkout 5.212  # Checkout the correct branch for Qt5
           mkdir build
           cd build
           cmake ..
           make -j4
           sudo make install
-        
-        #  git clone https://github.com/qt/qtwebkit.git
-        #  cd qtwebkit
-        #  git checkout webkit-qt5  # Checkout the Qt5-compatible branch
-        #  mkdir build
-        #  cd build
-        #  cmake ..
-        #  make -j4
-        #  sudo make install
       
       - name: List current directory
         run: ls -R
