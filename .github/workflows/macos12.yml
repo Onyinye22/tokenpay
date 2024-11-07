@@ -102,7 +102,9 @@ jobs:
 
       # Package the app into a .dmg file
       - name: Create .dmg package
-        run: make package
+        run: |
+          echo "Creating .dmg file..."
+          hdiutil create -volname "MyApp" -srcfolder "release" -ov -format UDZO "release/MyApp.dmg"
 
       # Upload the .dmg file as an artifact
       - name: Upload artifact
@@ -110,4 +112,4 @@ jobs:
         with:
           name: tpay-macos13
           path: |
-            *.dmg
+            release/*.dmg
