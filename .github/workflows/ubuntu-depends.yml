@@ -24,7 +24,7 @@ jobs:
           mkdir build
           cd build
           cmake ..
-          make -j4
+          make -j1 V=1
           sudo make install
       
       - name: List current directory
@@ -53,4 +53,4 @@ jobs:
         run: CONFIG_SITE=$PWD/depends/x86_64-linux-gnu/share/config.site ./configure --enable-gui --disable-bench --disable-tests --disable-dependency-tracking --disable-werror --prefix=`pwd`/depends/x86_64-linux-gnu
 
       - name: Build project
-        run: make -j4
+        run: make -j1 V=1
