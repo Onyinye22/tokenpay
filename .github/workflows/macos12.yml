@@ -98,20 +98,18 @@ jobs:
 
       # Compile the code
       - name: Compile the project
-        run: make clean
+        run: make clean && make
 
       # Package the app into a .dmg file
       - name: Create .dmg package
-        run: make deploy
-
-      - name: compile the project 
-        run: make
-        working-directory: path/to/your/project
-
+        run: |
+          mkdir MyAppFolder
+          cp -R ./path/to/your/app/MyApp.app MyAppFolder/
+          hdiutil create -volname MyApp -srcfolder MyAppFolder -ov -format UDZO MyApp.dmg
+       
       # Upload the .dmg file as an artifact
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tpay-macos13
-          path: |
-            *.dmg
+          name: MyApp-macos13
+          path: MyApp.dmg
