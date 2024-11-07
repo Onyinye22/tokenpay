@@ -11,7 +11,7 @@ jobs:
         run: sudo apt-get update
 
       - name: Install base dependencies      
-        run: sudo apt-get install build-essential xutils-dev libtool gperf autotools-dev automake pkg-config bsdmainutils libattr1-dev make automake bison byacc cmake curl g++-multilib binutils-gold bison byacc python3 libevent-dev libboost-all-dev
+        run: sudo apt-get install build-essential xutils-dev libtool gperf autotools-dev automake pkg-config bsdmainutils libattr1-dev make automake bison byacc cmake curl g++-multilib binutils-gold bison byacc python3 libevent-dev libboost-all-dev qtbase5-dev qttools5-dev-tools
 
       - name: List current directory
         run: ls -R
