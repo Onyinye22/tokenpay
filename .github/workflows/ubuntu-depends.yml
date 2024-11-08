@@ -32,20 +32,15 @@ jobs:
           git clone https://github.com/qt/qtsensors.git
           cd qtsensors
           git checkout 5.15  # Switch to a Qt5-compatible branch
+          cd src
+          make clean
           qmake CONFIG-=examples  # Exclude examples from the build
-          make -j$(nproc) -C src
+          make -j$(nproc) 
           sudo make install
       
       - name: List current directory
         run: ls -R
-
-      - name: Set up Qt environment (optional, if Qt is custom-installed)
-        run: |
-          export QT_HOME=/path/to/your/qt/installation
-          export PATH=$QT_HOME/bin:$PATH
-          export LD_LIBRARY_PATH=$QT_HOME/lib:$LD_LIBRARY_PATH
-        # Only necessary if you're using a custom Qt installation
-
+      
       - name: execute permission for autogen.sh
        # if: exists('./autogen.sh')  # Check if file exists
         run: chmod +x autogen.sh
