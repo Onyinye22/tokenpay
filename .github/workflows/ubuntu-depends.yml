@@ -36,12 +36,24 @@ jobs:
           qmake CONFIG-=examples  # Exclude examples from the build
           make -j$(nproc) 
           sudo make install
-
-      - name: Ensure correct permissions and move library
+          
+      - name: Check if the library exists before moving
         run: |
-          mkdir -p ../../../qml/QtSensors  # Create the target directory if it doesn't exist
-          chmod -R u+w ../../../qml/QtSensors  # Ensure write permissions
-          mv -f libdeclarative_sensors.so ../../../qml/QtSensors/libdeclarative_sensors.so
+          if [ -f libdeclarative_sensors.so ]; then
+            echo "Library exists, moving it."
+            mkdir -p ../../../qml/QtSensors  # Create the target directory if it doesn't exist
+            chmod -R u+w ../../../qml/QtSensors  # Ensure write permissions
+            mv -f libdeclarative_sensors.so ../../../qml/QtSensors/libdeclarative_sensors.so
+          else
+            echo "Library does not exist. Something went wrong during the build."
+            exit 1
+          fi    
+
+    #  - name: Ensure correct permissions and move library
+    #    run: |
+    #      mkdir -p ../../../qml/QtSensors  # Create the target directory if it doesn't exist
+    #      chmod -R u+w ../../../qml/QtSensors  # Ensure write permissions
+    #      mv -f libdeclarative_sensors.so ../../../qml/QtSensors/libdeclarative_sensors.so
       
       - name: List current directory
         run: ls -R
