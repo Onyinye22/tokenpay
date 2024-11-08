@@ -34,21 +34,23 @@ jobs:
           git checkout 5.15  # Switch to a Qt5-compatible branch
           cd src
           qmake CONFIG-=examples  # Exclude examples from the build
-          make -j$(nproc) 
-          sudo make install
-          
-      - name: Check if the library exists before moving
-        run: |
-          if [ -f libdeclarative_sensors.so ]; then
-            echo "Library exists, moving it."
-            mkdir -p ../../../qml/QtSensors  # Create the target directory if it doesn't exist
-            chmod -R u+w ../../../qml/QtSensors  # Ensure write permissions
-            mv -f libdeclarative_sensors.so ../../../qml/QtSensors/libdeclarative_sensors.so
-          else
-            echo "Library does not exist. Something went wrong during the build."
-            exit 1
-          fi    
+          make -j$(nproc) V=1
+          ls -l src/imports/sensors  # Check if the library exists after build
+          make install
+#          sudo make install
 
+      - name: Ensure the target directory exists and has correct permissions
+        run: |
+          mkdir -p ../../../qml/QtSensors  # Create the target directory if it doesn't exist
+          chmod -R u+w ../../../qml/QtSensors  # Ensure write permissions
+          ls -ld ../../../qml/QtSensors  # Check permissions and directory structure
+
+      - name: Move or copy the library to the target directory
+        run: |
+          mkdir -p ../../../qml/QtSensors  # Ensure the target directory exists
+          cp -f libdeclarative_sensors.so ../../../qml/QtSensors/libdeclarative_sensors.so  # Use cp instead of mv
+          ls -l ../../../qml/QtSensors  # Verify the library was copied successfully
+            
     #  - name: Ensure correct permissions and move library
     #    run: |
     #      mkdir -p ../../../qml/QtSensors  # Create the target directory if it doesn't exist
