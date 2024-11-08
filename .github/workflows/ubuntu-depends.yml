@@ -36,24 +36,30 @@ jobs:
           qmake CONFIG-=examples  # Exclude examples from the build
           make -j$(nproc) 
           sudo make install
+
+      - name: Ensure correct permissions and move library
+        run: |
+          mkdir -p ../../../qml/QtSensors  # Create the target directory if it doesn't exist
+          chmod -R u+w ../../../qml/QtSensors  # Ensure write permissions
+          mv -f libdeclarative_sensors.so ../../../qml/QtSensors/libdeclarative_sensors.so
       
       - name: List current directory
         run: ls -R
       
-      - name: execute permission for autogen.sh
+    #  - name: execute permission for autogen.sh
        # if: exists('./autogen.sh')  # Check if file exists
-        run: chmod +x autogen.sh
+    #    run: chmod +x autogen.sh
 
-      - name: run autogen.sh to generate configure script
-        run: ./autogen.sh
+    #  - name: run autogen.sh to generate configure script
+    #    run: ./autogen.sh
             
-      - name: execute permission to configure script
-        run: chmod +x configure
+    #  - name: execute permission to configure script
+    #    run: chmod +x configure
 
-      - name: configure
-        run: |
-          export CMAKE_PREFIX_PATH=/usr/local/lib/cmake/Qt5Sensors  # Adjust the path if needed
-          CONFIG_SITE=$PWD/depends/x86_64-linux-gnu/share/config.site ./configure --enable-gui --disable-bench --disable-tests --disable-dependency-tracking --disable-werror --prefix=`pwd`/depends/x86_64-linux-gnu
+    #  - name: configure
+    #    run: |
+    #      export CMAKE_PREFIX_PATH=/usr/local/lib/cmake/Qt5Sensors  # Adjust the path if needed
+    #      CONFIG_SITE=$PWD/depends/x86_64-linux-gnu/share/config.site ./configure --enable-gui --disable-bench --disable-tests --disable-dependency-tracking --disable-werror --prefix=`pwd`/depends/x86_64-linux-gnu
 
-      - name: Build project
-        run: make -j$(nproc) V=1
+      - name: Build project with verbose logs
+        run: make -j$(nproc) V=1 2>&1 | tee build.log
