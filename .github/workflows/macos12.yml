@@ -101,10 +101,11 @@ jobs:
         run: make clean
 
       - name: Verify release directory
-        run: |
-          echo "Checking contents of release directory..."
-          ls -alh
-
+        run: kdir -p release
+         
+      - name: List of the release directory
+        run: ls -R release
+          
       # Package the app into a .dmg file
       - name: Create .dmg package
         run: |
