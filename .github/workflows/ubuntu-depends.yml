@@ -53,4 +53,4 @@ jobs:
         run: CONFIG_SITE=$PWD/depends/x86_64-linux-gnu/share/config.site ./configure --enable-gui --disable-bench --disable-tests --disable-dependency-tracking --disable-werror --prefix=`pwd`/depends/x86_64-linux-gnu
 
       - name: Build project
-        run: make -j$
+        run: make -j$(nproc) V=1
