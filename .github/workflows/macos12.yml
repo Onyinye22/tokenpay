@@ -101,7 +101,7 @@ jobs:
         run: make clean
 
       - name: Verify release directory
-        run: kdir -p release
+        run: mkdir -p release
          
       - name: List of the release directory
         run: ls -R release
