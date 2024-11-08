@@ -16,16 +16,16 @@ jobs:
       - name: Install dependencies for building QtWebKit
         run: sudo apt-get install libx11-dev libjpeg-dev libpng-dev libtiff-dev libwebp-dev libxslt-dev qtdeclarative5-dev qtpositioning5-dev
       
-      - name: Clone and build QtWebKit from source
-        run: |
-          git clone https://github.com/qt/qtwebkit.git
-          cd qtwebkit
-          git checkout 5.212  # Checkout the correct branch for Qt5
-          mkdir build
-          cd build
-          cmake ..
-          make -j$
-          sudo make install
+    #  - name: Clone and build QtWebKit from source
+    #    run: |
+    #      git clone https://github.com/qt/qtwebkit.git
+    #      cd qtwebkit
+    #      git checkout 5.212  # Checkout the correct branch for Qt5
+    #      mkdir build
+    #      cd build
+    #      cmake ..
+    #      make -j$
+    #      sudo make install
 
       - name: Clone and build QtSensors from source
         run: |
