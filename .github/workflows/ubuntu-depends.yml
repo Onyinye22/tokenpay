@@ -11,10 +11,10 @@ jobs:
         run: sudo add-apt-repository universe && sudo apt-get update
              
       - name: Install base dependencies      
-        run: sudo apt-get install build-essential xutils-dev libtool gperf autotools-dev automake pkg-config bsdmainutils libattr1-dev make automake bison byacc cmake curl g++-multilib binutils-gold bison byacc python3 libevent-dev libboost-all-dev qtbase5-dev qttools5-dev-tools
+        run: sudo apt-get install -y build-essential xutils-dev libtool gperf autotools-dev automake pkg-config bsdmainutils libattr1-dev make automake bison byacc cmake curl g++-multilib binutils-gold bison byacc python3 libevent-dev libboost-all-dev qtbase5-dev qttools5-dev-tools
 
       - name: Install dependencies for building QtWebKit
-        run: sudo apt-get install libx11-dev libjpeg-dev libpng-dev libtiff-dev libwebp-dev libxslt-dev qtdeclarative5-dev qtpositioning5-dev qtbase5-private-dev
+        run: sudo apt-get install -y libx11-dev libjpeg-dev libpng-dev libtiff-dev libwebp-dev libxslt-dev qtdeclarative5-dev qtpositioning5-dev qtbase5-private-dev
       
     #  - name: Clone and build QtWebKit from source
     #    run: |
@@ -40,6 +40,7 @@ jobs:
         run: ls -R
 
       - name: execute permission for autogen.sh
+       # if: exists('./autogen.sh')  # Check if file exists
         run: chmod +x autogen.sh
 
       - name: run autogen.sh to generate configure script
