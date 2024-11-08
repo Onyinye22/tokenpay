@@ -13,8 +13,8 @@ jobs:
       - name: Install base dependencies      
         run: sudo apt-get install -y build-essential xutils-dev libtool gperf autotools-dev automake pkg-config bsdmainutils libattr1-dev make automake bison byacc cmake curl g++-multilib binutils-gold bison byacc python3 libevent-dev libboost-all-dev qtbase5-dev qttools5-dev-tools
 
-      - name: Install dependencies for building QtWebKit
-        run: sudo apt-get install -y libx11-dev libjpeg-dev libpng-dev libtiff-dev libwebp-dev libxslt-dev qtdeclarative5-dev qtpositioning5-dev qtbase5-private-dev
+      - name: Install dependencies for building Qt5
+        run: sudo apt-get install -y libx11-dev libjpeg-dev libpng-dev libtiff-dev libwebp-dev libxslt-dev qtdeclarative5-dev qtpositioning5-dev qtbase5-private-dev qt5-qmake qt5-default libqt5sensors5-dev
       
     #  - name: Clone and build QtWebKit from source
     #    run: |
@@ -33,7 +33,7 @@ jobs:
           cd qtsensors
           git checkout 5.15  # Switch to a Qt5-compatible branch
           qmake CONFIG-=examples  # Exclude examples from the build
-          make -j$(nproc)
+          make -j$(nproc) -C src
           sudo make install
       
       - name: List current directory
