@@ -32,9 +32,7 @@ jobs:
           git clone https://github.com/qt/qtsensors.git
           cd qtsensors
           git checkout 5.15  # Switch to a Qt5-compatible branch
-          mkdir build
-          cd build
-          cmake ..
+          qmake
           make -j$(nproc)
           sudo make install
       
