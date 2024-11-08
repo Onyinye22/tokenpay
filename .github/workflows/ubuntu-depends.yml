@@ -31,6 +31,7 @@ jobs:
         run: |
           git clone https://github.com/qt/qtsensors.git
           cd qtsensors
+          git checkout 5.15  # Switch to a Qt5-compatible branch
           mkdir build
           cd build
           cmake ..
@@ -50,7 +51,9 @@ jobs:
         run: chmod +x configure
 
       - name: configure
-        run: CONFIG_SITE=$PWD/depends/x86_64-linux-gnu/share/config.site ./configure --enable-gui --disable-bench --disable-tests --disable-dependency-tracking --disable-werror --prefix=`pwd`/depends/x86_64-linux-gnu
+        run: |
+          export CMAKE_PREFIX_PATH=/usr/local/lib/cmake/Qt5Sensors  # Adjust the path if needed
+          CONFIG_SITE=$PWD/depends/x86_64-linux-gnu/share/config.site ./configure --enable-gui --disable-bench --disable-tests --disable-dependency-tracking --disable-werror --prefix=`pwd`/depends/x86_64-linux-gnu
 
       - name: Build project
         run: make -j$(nproc) V=1
